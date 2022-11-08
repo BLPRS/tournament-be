@@ -26,6 +26,7 @@
   "dependencies": {
     "compression": "^1.7.4",
     "debug": "~2.6.9",
+    "dotenv": "^16.0.3",
     "express": "~4.16.1",
     "http-errors": "~1.6.3",
     "jsonwebtoken": "^8.5.1",
@@ -35,6 +36,5 @@
     "passport": "^0.6.0",
     "passport-jwt": "^4.0.0",
     "passport-local": "^1.0.0"
-  },
-  "devDependencies": {}
+  }
 }
