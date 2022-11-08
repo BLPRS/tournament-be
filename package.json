@@ -1,0 +1,40 @@
+{
+  "name": "tournament-be",
+  "version": "1.0.0",
+  "description": "Tournament API",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/BLPRS/tournament-be.git"
+  },
+  "keywords": [
+    "MongoDB",
+    "Express",
+    "Angular",
+    "NodeJS",
+    "BLPRS"
+  ],
+  "author": "BLPRS",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/BLPRS/tournament-be/issues"
+  },
+  "homepage": "https://github.com/BLPRS/tournament-be#readme",
+  "scripts": {
+    "start": "node ./server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "compression": "^1.7.4",
+    "debug": "~2.6.9",
+    "express": "~4.16.1",
+    "http-errors": "~1.6.3",
+    "jsonwebtoken": "^8.5.1",
+    "method-override": "^3.0.0",
+    "mongoose": "^6.0.8",
+    "morgan": "~1.9.1",
+    "passport": "^0.6.0",
+    "passport-jwt": "^4.0.0",
+    "passport-local": "^1.0.0"
+  },
+  "devDependencies": {}
+}
