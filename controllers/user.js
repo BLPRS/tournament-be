@@ -2,6 +2,7 @@ let User = require("../models/user");
 let passport = require("passport");
 
 let jwt = require("jsonwebtoken");
+let config = require("../config/config");
 
 function getErrorMessage(err) {
   console.log(err);
@@ -73,7 +74,8 @@ module.exports.signin = function (req, res, next) {
           {
             payload: payload,
           },
-          process.env.SECRETKEY,
+          // process.env.SECRETKEY,
+          config.SECRETKEY,
           {
             algorithm: "HS512",
             expiresIn: "20min",

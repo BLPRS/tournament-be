@@ -3,7 +3,7 @@
 /**
  * Module dependencies.
  */
-require("dotenv").config();
+// require("dotenv").config();
 
 var dbConfig = require("./config/db");
 var app = require("./config/app");

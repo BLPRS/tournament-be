@@ -1,5 +1,6 @@
 // In real project, never expose your credential in your code.
-let uriDB = process.env.ATLASDB;
+// let uriDB = process.env.ATLASDB;
+let uriDB = require("./config").ATLASDB;
 
 let mongoose = require("mongoose");
 
