@@ -1,5 +1,6 @@
 var express = require("express");
 var router = express.Router();
+let authController = require("../controllers/auth");
 
 let tournamentController = require("../controllers/tournament");
 
@@ -7,12 +8,14 @@ let tournamentController = require("../controllers/tournament");
 router.get("/list", tournamentController.tournamentList);
 
 /* POST create tournament */
-router.post("/add", tournamentController.tournamentAdd);
+router.post("/add", authController.requireAuth, tournamentController.tournamentAdd);
 
 /* PUT update tournament */
-router.put("/edit/:id", tournamentController.tournamentEdit);
+/*UPDATE1*/
+router.put("/edit/:id", authController.requireAuth, authController.isAllowed, tournamentController.tournamentEdit);
 
 /* DELETE delete tournament */
-router.delete("/delete/:id", tournamentController.tournamentDelete);
+/*UPDATE2*/
+router.delete("/delete/:id", authController.requireAuth, authController.isAllowed, tournamentController.tournamentDelete);
 
 module.exports = router;
