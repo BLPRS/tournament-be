@@ -1,5 +1,44 @@
 let mongoose = require("mongoose");
 
+/*
+ * embedded object Match
+ */
+
+const MatchSchema = mongoose.Schema(
+  {
+    x: { type: String },
+    y: { type: String },
+    winner: { type: Number },
+  },
+  { _id: false }
+);
+
+/*
+ * embedded object Round
+ */
+
+const RoundSchema = mongoose.Schema(
+  {
+    r16: { type: [MatchSchema] },
+    r8: { type: [MatchSchema] },
+    r4: { type: [MatchSchema] },
+    r2: { type: [MatchSchema] },
+  },
+  { _id: false }
+);
+
+/*
+ * embedded object Participant
+ */
+
+const ParticipantSchema = mongoose.Schema(
+  {
+    id: { type: String },
+    name: { type: String },
+  },
+  { _id: false }
+);
+
 // Create Tournament schema
 let TournamentSchema = mongoose.Schema(
   {
@@ -11,30 +50,20 @@ let TournamentSchema = mongoose.Schema(
       type: String,
       trim: true,
     },
-    type: String,
-    gameName: String,
-    playerNum: Number,
-    startedAt: Date,
-    createdAt: {
-      type: Date,
-      default: function() {
-        if (this.createdAt) return;
-        return Date.now();
-      },
-    },
-    updatedAt: {
-      type: Date,
-      default: Date.now,
-    },
     // adds relationship with USER
     // use Model ID = User
-    owner:{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "User"
-    }
-
+    owner: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+    },
+    participants: [ParticipantSchema],
+    rounds: RoundSchema,
+    startedAt: String,
+    deleted: { type: Boolean, default: false },
+    completed: { type: Boolean, default: false },
   },
   {
+    timestamps: true,
     collection: "tournament",
   }
 );
