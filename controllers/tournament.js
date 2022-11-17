@@ -19,47 +19,34 @@ function getErrorMessage(err) {
  * DISPLAYING TOURNAMENT LIST
  * PROVIDING OWNER'S INFO AFTER LIST
  */
-module.exports.tournamentList = async function(req, res, next){  
-
+module.exports.tournamentList = async function (req, res, next) {
   try {
-      let tournamentList = await Tournament.find().populate({
-          path: 'owner',
-          select: 'firstName lastName email username admin created'
-      });
+    let tournamentList = await Tournament.find().populate({
+      path: "owner",
+      select: "firstName lastName email username admin created",
+    });
 
-      res.status(200).json(tournamentList);
-      
+    res.status(200).json(tournamentList);
   } catch (error) {
     console.error(error);
-      return res.status(400).json(
-          { 
-              success: false, 
-              message: getErrorMessage(error)
-          }
-      );
+    return res.status(400).json({
+      success: false,
+      message: getErrorMessage(error),
+    });
   }
-}
+};
 
 /**
  * ADDING TOURNAMENT ITEM
  * DEFINING OWNERSHIP OF ITEM
  */
 module.exports.tournamentAdd = (req, res, next) => {
-  console.log(req.body);
-
   try {
-    let newItem = Tournament({
-      _id: req.body.id,
-      name: req.body.name,
-      description: req.body.description,
-      type: req.body.type,
-      gameName: req.body.gameName,
-      playerNum: req.body.playerNum,
-      startedAt: req.body.startedAt,
-      owner: (req.body.owner == null || req.body.owner == "") ? req.payload.id : req.body.owner
-    });
-
-    Tournament.create(newItem, (err, item) => {
+    const owner =
+      req.body.owner == null || req.body.owner == ""
+        ? req.payload.id
+        : req.body.owner;
+    Tournament.create({ ...req.body, owner }, (err, item) => {
       if (err) {
         console.error(err);
 
@@ -86,23 +73,14 @@ module.exports.tournamentAdd = (req, res, next) => {
  */
 module.exports.tournamentEdit = (req, res, next) => {
   try {
-    let id = req.params.id;
+    const { id } = req.params;
+    const owner =
+      req.body.owner == null || req.body.owner == ""
+        ? req.payload.id
+        : req.body.owner;
 
-    let updatedItem = Tournament({
-      _id: id,
-      name: req.body.name,
-      description: req.body.description,
-      type: req.body.type,
-      gameName: req.body.gameName,
-      playerNum: req.body.playerNum,
-      startedAt: req.body.startedAt,
-      owner: (req.body.owner == null || req.body.owner == "")? req.payload.id : req.body.owner 
-    });
-
-    Tournament.updateOne({ _id: id }, updatedItem, (err) => {
+    Tournament.updateOne({ _id: id }, { ...req.body, owner }, (err) => {
       if (err) {
-        console.error(err);
-
         return res.status(400).json({
           success: false,
           message: getErrorMessage(error),
@@ -129,7 +107,7 @@ module.exports.tournamentEdit = (req, res, next) => {
  */
 module.exports.tournamentDelete = (req, res, next) => {
   try {
-    let id = req.params.id;
+    const { id } = req.params;
 
     Tournament.deleteOne({ _id: id }, (err) => {
       if (err) {
