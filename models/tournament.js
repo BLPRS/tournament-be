@@ -26,6 +26,13 @@ let TournamentSchema = mongoose.Schema(
       type: Date,
       default: Date.now,
     },
+    // adds relationship with USER
+    // use Model ID = User
+    owner:{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User"
+    }
+
   },
   {
     collection: "tournament",

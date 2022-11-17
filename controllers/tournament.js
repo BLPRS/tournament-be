@@ -15,22 +15,35 @@ function getErrorMessage(err) {
   }
 }
 
-module.exports.tournamentList = async (req, res, next) => {
-  const query = {};
-  const selectedFields = "name description type gameName playerNum startedAt";
+/**
+ * DISPLAYING TOURNAMENT LIST
+ * PROVIDING OWNER'S INFO AFTER LIST
+ */
+module.exports.tournamentList = async function(req, res, next){  
 
   try {
-    let tournamentList = await Tournament.find(query, selectedFields);
-    res.status(200).json(tournamentList);
+      let tournamentList = await Tournament.find().populate({
+          path: 'owner',
+          select: 'firstName lastName email username admin created'
+      });
+
+      res.status(200).json(tournamentList);
+      
   } catch (error) {
     console.error(error);
-    return res.status(400).json({
-      success: false,
-      message: getErrorMessage(error),
-    });
+      return res.status(400).json(
+          { 
+              success: false, 
+              message: getErrorMessage(error)
+          }
+      );
   }
-};
+}
 
+/**
+ * ADDING TOURNAMENT ITEM
+ * DEFINING OWNERSHIP OF ITEM
+ */
 module.exports.tournamentAdd = (req, res, next) => {
   console.log(req.body);
 
@@ -43,6 +56,7 @@ module.exports.tournamentAdd = (req, res, next) => {
       gameName: req.body.gameName,
       playerNum: req.body.playerNum,
       startedAt: req.body.startedAt,
+      owner: (req.body.owner == null || req.body.owner == "") ? req.payload.id : req.body.owner
     });
 
     Tournament.create(newItem, (err, item) => {
@@ -66,6 +80,10 @@ module.exports.tournamentAdd = (req, res, next) => {
   }
 };
 
+/**
+ * EDITING EXISTING ITEM
+ * ONLY OWNER OR ADMIN CAN EDIT
+ */
 module.exports.tournamentEdit = (req, res, next) => {
   try {
     let id = req.params.id;
@@ -78,6 +96,7 @@ module.exports.tournamentEdit = (req, res, next) => {
       gameName: req.body.gameName,
       playerNum: req.body.playerNum,
       startedAt: req.body.startedAt,
+      owner: (req.body.owner == null || req.body.owner == "")? req.payload.id : req.body.owner 
     });
 
     Tournament.updateOne({ _id: id }, updatedItem, (err) => {
@@ -93,6 +112,7 @@ module.exports.tournamentEdit = (req, res, next) => {
           success: true,
           message: "Item updated successfully.",
         });
+        console.log("UPDATED ITEMS" + updatedItem);
       }
     });
   } catch (error) {
@@ -103,6 +123,10 @@ module.exports.tournamentEdit = (req, res, next) => {
   }
 };
 
+/**
+ * DELETE EXISTING ITEM
+ * ONLY OWNER OR ADMIN CAN DELETE
+ */
 module.exports.tournamentDelete = (req, res, next) => {
   try {
     let id = req.params.id;
