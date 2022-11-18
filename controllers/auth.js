@@ -2,6 +2,7 @@ let passport = require("passport");
 let Tournament = require("../models/tournament");
 let UserModel = require('../models/user');
 
+//
 function getErrorMessage(err) {
   if (err.errors) {
     for (let errName in err.errors) {
