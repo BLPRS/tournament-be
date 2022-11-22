@@ -42,11 +42,13 @@ module.exports.tournamentList = async function (req, res, next) {
  */
 module.exports.tournamentAdd = (req, res, next) => {
   try {
-    const owner =
-      req.body.owner == null || req.body.owner == ""
-        ? req.payload.id
-        : req.body.owner;
-    Tournament.create({ ...req.body, owner }, (err, item) => {
+    const owner = ["", null, undefined].includes(req.body.owner)
+      ? req.payload.id
+      : req.body.owner;
+
+    const newItem = Tournament({ ...req.body, owner });
+
+    Tournament.create(newItem, (err, item) => {
       if (err) {
         console.error(err);
 
@@ -74,16 +76,16 @@ module.exports.tournamentAdd = (req, res, next) => {
 module.exports.tournamentEdit = (req, res, next) => {
   try {
     const { id } = req.params;
-    const owner =
-      req.body.owner == null || req.body.owner == ""
-        ? req.payload.id
-        : req.body.owner;
+    const owner = ["", null, undefined].includes(req.body.owner)
+      ? req.payload.id
+      : req.body.owner;
+    const updatedItem = Tournament({ ...req.body, owner });
 
-    Tournament.updateOne({ _id: id }, { ...req.body, owner }, (err) => {
-      if (err) {
+    Tournament.updateOne({ _id: id }, updatedItem, (err, result) => {
+      if (err || result.modifiedCount === 0) {
         return res.status(400).json({
           success: false,
-          message: getErrorMessage(error),
+          message: err ? getErrorMessage(err) : "Item not found.",
         });
       } else {
         res.status(200).json({
@@ -109,21 +111,25 @@ module.exports.tournamentDelete = (req, res, next) => {
   try {
     const { id } = req.params;
 
-    Tournament.deleteOne({ _id: id }, (err) => {
-      if (err) {
-        console.error(err);
+    Tournament.findByIdAndRemove(
+      { _id: id },
+      { rawResult: true },
+      (err, result) => {
+        if (err || result.value === null) {
+          console.error(err);
 
-        return res.status(400).json({
-          success: false,
-          message: getErrorMessage(error),
-        });
-      } else {
-        res.status(200).json({
-          success: true,
-          message: "Item deleted successfully.",
-        });
+          return res.status(400).json({
+            success: false,
+            message: err ? getErrorMessage(err) : "Item not found.",
+          });
+        } else {
+          res.status(200).json({
+            success: true,
+            message: "Item deleted successfully.",
+          });
+        }
       }
-    });
+    );
   } catch (error) {
     return res.status(400).json({
       success: false,

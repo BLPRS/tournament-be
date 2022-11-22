@@ -1,6 +1,6 @@
 let passport = require("passport");
 let Tournament = require("../models/tournament");
-let UserModel = require('../models/user');
+let User = require("../models/user");
 
 function getErrorMessage(err) {
   if (err.errors) {
@@ -36,48 +36,47 @@ exports.requireAuth = function (req, res, next) {
       next();
     }
   )(req, res, next);
-}
+};
 
 // Validates the owner of the item.
-exports.isAllowed = async function (req, res, next){
-
+exports.isAllowed = async function (req, res, next) {
   try {
-      let id = req.params.id
-      let TournamentItem = await Tournament.findById(id).populate('owner');   
-      
-      // If there is no item found.
-      if(TournamentItem == null){
-          throw new Error('Item not found.') // Express will catch this on its own.
+    let id = req.params.id;
+    let tournament = await Tournament.findById(id).populate("owner");
+
+    // If there is no item found.
+    if (tournament === null) {
+      throw new Error("Item not found."); // Express will catch this on its own.
+    } else if (tournament.owner !== null) {
+      // If the item found has a owner.
+
+      if (tournament.owner._id.toString() !== req.payload.id) {
+        // If the owner differs.
+
+        let currentUser = await User.findOne(
+          { _id: req.payload.id },
+          "admin"
+        );
+
+        if (currentUser.admin !== true) {
+          // If the user is not a Admin
+
+          console.log("====> Not authorized");
+          return res.status(403).json({
+            success: false,
+            message: "User is not authorized to modify this item.",
+          });
+        }
       }
-      else if(TournamentItem.owner != null){ // If the item found has a owner.
+    }
 
-          if(TournamentItem.owner._id != req.payload.id){ // If the owner differs.
-              
-              let currentUser = await UserModel.findOne({_id: req.payload.id}, 'admin');
-
-              if(currentUser.admin != true){ // If the user is not a Admin
-                  
-                  console.log('====> Not authorized');
-                  return res.status(403).json(
-                      { 
-                          success: false, 
-                          message: 'User is not authorized to modify this item.'
-                      }
-                  );
-              }
-          }        
-      }
-
-      // If it reaches this point, runs the next middleware.
-      next();    
+    // If it reaches this point, runs the next middleware.
+    next();
   } catch (error) {
-      console.log(error);
-      return res.status(400).json(
-          { 
-              success: false, 
-              message: getErrorMessage(error)
-          }
-      );
+    console.err(error);
+    return res.status(400).json({
+      success: false,
+      message: getErrorMessage(error),
+    });
   }
-  
-}
+};
