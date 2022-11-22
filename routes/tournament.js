@@ -11,11 +11,9 @@ router.get("/list", tournamentController.tournamentList);
 router.post("/add", authController.requireAuth, tournamentController.tournamentAdd);
 
 /* PUT update tournament */
-/*UPDATE1*/
 router.put("/edit/:id", authController.requireAuth, authController.isAllowed, tournamentController.tournamentEdit);
 
 /* DELETE delete tournament */
-/*UPDATE2*/
 router.delete("/delete/:id", authController.requireAuth, authController.isAllowed, tournamentController.tournamentDelete);
 
 module.exports = router;
