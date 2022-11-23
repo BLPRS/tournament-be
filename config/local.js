@@ -11,7 +11,6 @@ module.exports = function () {
     "tokencheck",
     new JWTstrategy(
       {
-        // secretOrKey: process.env.SECRETKEY,
         secretOrKey: config.SECRETKEY,
         jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken(),
       },
