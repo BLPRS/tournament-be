@@ -73,7 +73,7 @@ exports.isAllowed = async function (req, res, next) {
     // If it reaches this point, runs the next middleware.
     next();
   } catch (error) {
-    console.err(error);
+    console.error(error);
     return res.status(400).json({
       success: false,
       message: getErrorMessage(error),
