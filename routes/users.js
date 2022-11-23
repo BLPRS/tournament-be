@@ -12,4 +12,7 @@ router.post("/signup", usersController.signup);
 /* POST Sign-in */
 router.post("/signin", usersController.signin);
 
+/* PUT update user */
+router.put("/edit/:id", authController.requireAuth, usersController.userEdit);
+
 module.exports = router;

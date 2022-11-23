@@ -97,7 +97,7 @@ module.exports.signin = function (req, res, next) {
   })(req, res, next);
 };
 
-exports.myprofile = async function (req, res, next) {
+module.exports.myprofile = async function (req, res, next) {
   try {
     let id = req.payload.id;
     let me = await User.findById(id).select(
@@ -110,6 +110,33 @@ exports.myprofile = async function (req, res, next) {
     return res.status(400).json({
       success: false,
       message: getErrorMessage(error),
+    });
+  }
+};
+
+module.exports.userEdit = (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const updatedUser = req.body;
+
+    User.updateOne({ _id: id }, updatedUser, (err, result) => {
+      if (err || result.modifiedCount === 0) {
+        return res.status(400).json({
+          success: false,
+          message: err ? getErrorMessage(err) : "User not found.",
+        });
+      } else {
+        res.status(200).json({
+          success: true,
+          message: "User updated successfully.",
+        });
+        console.log("UPDATED User" + updatedUser);
+      }
+    });
+  } catch (error) {
+    return res.status(400).json({
+      success: false,
+      message: getErrorMessage(err),
     });
   }
 };
