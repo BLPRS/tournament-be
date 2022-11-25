@@ -1,7 +1,7 @@
-// Do not expose your credentials in your code.
+require("dotenv").config();
+
 module.exports = {
-  ATLASDB:
-    "mongodb+srv://dbuser:PZO6wjxARk92rkCr@cluster018.so2vhuv.mongodb.net/blprs?retryWrites=true&w=majority",
+  ATLASDB: process.env.ATLASDB,
   LOCALDB: "mongodb://localhost:27017/blprs",
-  SECRETKEY: "LNlUP5UD5ZL521TS6A3aD5/ylKw09ztAQYIICnpSEprm69uCnaYG/R8k+Ki7HEdr",
+  SECRETKEY: process.env.SECRETKEY,
 };

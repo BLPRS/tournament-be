@@ -74,7 +74,6 @@ module.exports.signin = function (req, res, next) {
           {
             payload: payload,
           },
-          // process.env.SECRETKEY,
           config.SECRETKEY,
           {
             algorithm: "HS512",
