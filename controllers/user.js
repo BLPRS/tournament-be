@@ -77,7 +77,7 @@ module.exports.signin = function (req, res, next) {
           config.SECRETKEY,
           {
             algorithm: "HS512",
-            expiresIn: "20min",
+            expiresIn: "1d",
           }
         );
 
