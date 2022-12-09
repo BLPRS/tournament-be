@@ -119,7 +119,7 @@ module.exports.userEdit = (req, res, next) => {
     const updatedUser = req.body;
 
     User.updateOne({ _id: id }, updatedUser, (err, result) => {
-      if (err || result.modifiedCount === 0) {
+      if (err) {
         return res.status(400).json({
           success: false,
           message: err ? getErrorMessage(err) : "User not found.",
@@ -129,7 +129,6 @@ module.exports.userEdit = (req, res, next) => {
           success: true,
           message: "User updated successfully.",
         });
-        console.log("UPDATED User" + updatedUser);
       }
     });
   } catch (error) {
